@@ -25,13 +25,12 @@ int main(int argc, char *argv[])
     Words *aux = words;
     while (aux != NULL)
     {
-        cout << aux->word << endl;
+        // cout << aux->word << endl;
         aux = aux->next;
     }
 
-    int pos = hash_function("acb");
-
-    cout << "Posição da palavra abc: " << pos << endl;
+    cout << "Posição da palavra apple: " << hash_function("apple") << endl;
+    cout << "Posição da palavra elppa: " << hash_function("elppa") << endl;
 
     return 0;
 }
