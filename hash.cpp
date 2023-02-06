@@ -12,6 +12,12 @@ struct HashTable
     HashTable *next;
 };
 
+struct InsertResult
+{
+    int total_elements;
+    int element_count;
+};
+
 // função hash que recebe palavra e devolve a posição na tabela hash
 int hash_function(string word, int size)
 {
@@ -30,11 +36,10 @@ int hash_function(string word, int size)
 }
 
 // inserir na tabela hash e retorna o número de elementos únicos
-int insert(HashTable *hash_table, string key, int size, int n, int default_count = 1)
+InsertResult insert(HashTable *hash_table, string key, int size, int n, int default_count = 1)
 {
-    int pos = hash_function(key, size);
+    int pos = hash_function(key, size), total_elements = n;
     HashTable *aux = &hash_table[pos];
-    int total_elements = n;
 
     // se posição da tabela hash estiver vazia insere a palavra
     if (aux->key == "")
@@ -44,7 +49,7 @@ int insert(HashTable *hash_table, string key, int size, int n, int default_count
         aux->next = NULL;
         // cout << "aux was empty" << aux->key << endl;
         // cout << "pos = " << pos << endl;
-        return total_elements + 1;
+        return InsertResult{total_elements + 1, default_count};
     }
 
     // se houver colisão, insere na lista
@@ -53,7 +58,7 @@ int insert(HashTable *hash_table, string key, int size, int n, int default_count
         if (aux->key == key)
         {
             aux->count++;
-            return total_elements;
+            return InsertResult{total_elements, aux->count};
         }
         aux = aux->next;
     }
@@ -62,7 +67,7 @@ int insert(HashTable *hash_table, string key, int size, int n, int default_count
     if (aux->key == key)
     {
         aux->count++;
-        return total_elements;
+        return InsertResult{total_elements, aux->count};
     }
 
     // se não existir, insere no final da lista
@@ -71,7 +76,7 @@ int insert(HashTable *hash_table, string key, int size, int n, int default_count
     novo->count = default_count;
     novo->next = NULL;
     aux->next = novo;
-    return total_elements + 1;
+    return InsertResult{total_elements + 1, default_count};
 }
 
 // pesquisa na bela hash e na lista

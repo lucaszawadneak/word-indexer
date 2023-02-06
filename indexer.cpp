@@ -5,6 +5,7 @@
 
 #include "words.cpp"
 #include "hash.cpp"
+#include "sort_tree.cpp"
 
 using namespace std;
 
@@ -20,17 +21,17 @@ void print_how_to_use()
 // função main que recebe parametros de linha de comando
 int main(int argc, char *argv[])
 {
+    int total_elements = 0, size = 97;
+    HashTable *hash_table;
+    OrderList *order_list;
+
     cout << "Indexador de palavras" << endl;
 
     string mode = argv[1];
     string searchKey = argv[2];
 
     cout << "Modo: " << mode << endl;
-    cout << "Palavra: " << searchKey << endl;
-    cout << "Arquivo: " << argv[3] << endl;
 
-    int total_elements = 0;
-    int size = 97;
     if (argv[3] == NULL)
     {
         cout << "Arquivo inválido" << endl;
@@ -44,15 +45,24 @@ int main(int argc, char *argv[])
     if (words == NULL)
         return 1;
 
-    cout << "size = " << size << endl;
+    // cout << "size = " << size << endl;
 
-    HashTable *hash_table = new HashTable[size];
+    hash_table = new HashTable[size];
+    order_list = new OrderList;
 
     // insere as palavras na tabela hash
     while (words != NULL)
     {
-        total_elements = insert(hash_table, words->word, size, total_elements);
-        words = words->next;
+        InsertResult result = insert(hash_table, words->word, size, total_elements);
+        total_elements = result.total_elements;
+
+        if (mode == "--freq")
+        {
+            // parsed search key
+            int parsedSearchKey = stoi(searchKey);
+
+            order_list = insert_in_order_list(order_list, words->word, result.element_count, parsedSearchKey);
+        }
 
         // verifica se a tabela hash precisa ser redimensionada
         if (total_elements / size >= 8)
@@ -61,6 +71,7 @@ int main(int argc, char *argv[])
             cout << "Resizing table " << size * 2 << endl;
             hash_table = resize(hash_table, size / 2, size);
         }
+        words = words->next;
     }
 
     delete words;
@@ -71,6 +82,13 @@ int main(int argc, char *argv[])
     {
         cout << "Palavra: " << searchKey << endl;
         cout << "Frequencia: " << search(hash_table, searchKey, size) << " ocorrências" << endl;
+        return 1;
+    }
+
+    if (mode == "--freq")
+    {
+        print_ordered_list(order_list);
+        return 1;
     }
 
     return 0;
