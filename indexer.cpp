@@ -9,13 +9,31 @@
 using namespace std;
 
 // TODO: argumentos freq freq-word search
+
+void print_how_to_use()
+{
+    cout << "Parametros incorretos" << endl;
+    cout << "Primeiro parametro: freq ou freq-word ou search" << endl;
+    cout << "Verifique ESPECIFICACAO.md para mais detalhes" << endl;
+}
+
+// função main que recebe parametros de linha de comando
 int main(int argc, char *argv[])
 {
+    cout << "Indexador de palavras" << endl;
+
+    string mode = argv[1];
+    string searchKey = argv[2];
+
+    cout << "Modo: " << mode << endl;
+    cout << "Palavra: " << searchKey << endl;
+    cout << "Arquivo: " << argv[3] << endl;
+
     int total_elements = 0;
     int size = 97;
-    if (argc != 2)
+    if (argv[3] == NULL)
     {
-        cout << "Uso: " << argv[0] << " <nome_arquivo>" << endl;
+        cout << "Arquivo inválido" << endl;
         return 1;
     }
 
@@ -47,9 +65,13 @@ int main(int argc, char *argv[])
 
     delete words;
 
-    cout << "Palavra betray pesquisada: (esperada 775)" << search(hash_table, "betray", size) << endl;
-
     // print_table(hash_table, size);
+
+    if (mode == "--freq-word")
+    {
+        cout << "Palavra: " << searchKey << endl;
+        cout << "Frequencia: " << search(hash_table, searchKey, size) << " ocorrências" << endl;
+    }
 
     return 0;
 }

@@ -30,7 +30,7 @@ int hash_function(string word, int size)
 }
 
 // inserir na tabela hash e retorna o número de elementos únicos
-int insert(HashTable *hash_table, string key, int size, int n)
+int insert(HashTable *hash_table, string key, int size, int n, int default_count = 1)
 {
     int pos = hash_function(key, size);
     HashTable *aux = &hash_table[pos];
@@ -40,7 +40,7 @@ int insert(HashTable *hash_table, string key, int size, int n)
     if (aux->key == "")
     {
         aux->key = key;
-        aux->count = 1;
+        aux->count = default_count;
         aux->next = NULL;
         // cout << "aux was empty" << aux->key << endl;
         // cout << "pos = " << pos << endl;
@@ -68,7 +68,7 @@ int insert(HashTable *hash_table, string key, int size, int n)
     // se não existir, insere no final da lista
     HashTable *novo = new HashTable;
     novo->key = key;
-    novo->count = 1;
+    novo->count = default_count;
     novo->next = NULL;
     aux->next = novo;
     return total_elements + 1;
@@ -78,7 +78,7 @@ int insert(HashTable *hash_table, string key, int size, int n)
 int search(HashTable *hash_table, string key, int size)
 {
     int pos = hash_function(key, size);
-    cout << "pos = " << pos << endl;
+    // cout << "pos = " << pos << endl;
     HashTable *aux = &hash_table[pos];
 
     if (aux->key == "")
@@ -108,11 +108,11 @@ HashTable *resize(HashTable *hash_table, int old_size, int new_size)
         aux = &hash_table[i];
         if (aux->key != "")
         {
-            insert(new_hash_table, aux->key, new_size, 0);
+            insert(new_hash_table, aux->key, new_size, 0, aux->count);
             while (aux->next != NULL)
             {
                 aux = aux->next;
-                insert(new_hash_table, aux->key, new_size, 0);
+                insert(new_hash_table, aux->key, new_size, 0, aux->count);
             }
         }
     }

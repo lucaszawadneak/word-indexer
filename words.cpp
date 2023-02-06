@@ -16,10 +16,10 @@ struct Words
 Words *formatter(char *argv[])
 {
 
-    ifstream arquivo(argv[1]);
+    ifstream arquivo(argv[3]);
     if (!arquivo.is_open())
     {
-        cout << "Erro ao abrir arquivo " << argv[1] << endl;
+        cout << "Erro ao abrir arquivo" << endl;
         return NULL;
     }
     Words *head = NULL;
