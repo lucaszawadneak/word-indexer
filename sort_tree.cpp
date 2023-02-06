@@ -28,6 +28,7 @@ OrderList *insert_in_order_list(OrderList *list, string key, int count, int list
         return aux;
     }
 
+    // TODO: ajustar algoritmo
     if (aux->count >= count)
     {
         new_node->next = aux;

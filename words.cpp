@@ -13,6 +13,19 @@ struct Words
     Words *next;
 };
 
+// remove caracteres especiais do final da palavra
+string parse_word(string word)
+{
+    string::iterator it = word.end();
+    it--;
+    while (it != word.begin() && !isalpha(*it))
+    {
+        it = word.erase(it);
+        it--;
+    }
+    return word;
+}
+
 Words *formatter(char *argv[])
 {
 
@@ -28,13 +41,16 @@ Words *formatter(char *argv[])
     while (arquivo >> palavra)
     {
         // Transforma a palavra para lower case
+
         transform(palavra.begin(), palavra.end(), palavra.begin(), ::tolower);
 
-        // Verifica se a palavra tem mais de 2 letras
-        if (palavra.length() > 2 && palavra.find_first_of("0123456789.,;:!?*'/'-()[]{}'\"") == string::npos)
+        string parsed_word = parse_word(palavra);
+
+        // Verifica se a palavra tem mais de 2 letras e não possui caracteres especiais
+        if (parsed_word.length() > 2 && parsed_word.find_first_of("0123456789.,;:!?*'/'-_@#()[]{}'\"") == string::npos)
         {
             Words *novo = new Words;
-            novo->word = palavra;
+            novo->word = parsed_word;
             novo->next = head;
             head = novo;
         }

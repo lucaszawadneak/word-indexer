@@ -41,14 +41,15 @@ InsertResult insert(HashTable *hash_table, string key, int size, int n, int defa
     int pos = hash_function(key, size), total_elements = n;
     HashTable *aux = &hash_table[pos];
 
+    // cout << "pos = " << pos << endl;
+    // cout << "key = " << key << endl;
+
     // se posição da tabela hash estiver vazia insere a palavra
     if (aux->key == "")
     {
         aux->key = key;
         aux->count = default_count;
         aux->next = NULL;
-        // cout << "aux was empty" << aux->key << endl;
-        // cout << "pos = " << pos << endl;
         return InsertResult{total_elements + 1, default_count};
     }
 
