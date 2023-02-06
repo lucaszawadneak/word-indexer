@@ -5,11 +5,11 @@
 
 #include "words.cpp"
 #include "hash.cpp"
-#include "sort_tree.cpp"
 
 using namespace std;
 
-// TODO: argumentos freq freq-word search
+// TODO: freq-word
+// TODO: search
 
 void print_how_to_use()
 {
@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
 {
     int total_elements = 0, size = 97;
     HashTable *hash_table;
-    OrderList *order_list;
 
     cout << "Indexador de palavras" << endl;
 
@@ -48,21 +47,12 @@ int main(int argc, char *argv[])
     // cout << "size = " << size << endl;
 
     hash_table = new HashTable[size];
-    order_list = new OrderList;
 
     // insere as palavras na tabela hash
     while (words != NULL)
     {
         InsertResult result = insert(hash_table, words->word, size, total_elements);
         total_elements = result.total_elements;
-
-        if (mode == "--freq")
-        {
-            // parsed search key
-            int parsedSearchKey = stoi(searchKey);
-
-            order_list = insert_in_order_list(order_list, words->word, result.element_count, parsedSearchKey);
-        }
 
         // verifica se a tabela hash precisa ser redimensionada
         if (total_elements / size >= 8)
@@ -82,12 +72,6 @@ int main(int argc, char *argv[])
     {
         cout << "Palavra: " << searchKey << endl;
         cout << "Frequencia: " << search(hash_table, searchKey, size) << " ocorrências" << endl;
-        return 1;
-    }
-
-    if (mode == "--freq")
-    {
-        print_ordered_list(order_list);
         return 1;
     }
 
