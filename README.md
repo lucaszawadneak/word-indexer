@@ -2,6 +2,8 @@
 
 ## Motivação e funcionamento
 
+Este trabalho foi desenvolvido a partir da seguinte especificação: [Clique aqui](ESPECIFICACAO.md)
+
 Para o desenvolvimento do indexador de palavras, a estrutura de dados escolhida foi a **tabela hash**. A tabela hash é utilizada em diversas aplicações para garantir a eficiência na busca por elementos em **grandes coleções de dados**. Em vez de percorrer uma lista ou árvore inteira em busca de um elemento, ela mapeia o valor de uma chave para um índice específico na tabela, permitindo acesso direto ao elemento desejado. Além disso, as operações de inserção e remoção também são realizadas de forma mais rápida. A complexidade dessas operações depende do tamanho da tabela e da qualidade da função hash usada.
 
 Em uma tabela hash ideal, onde a função hash distribui uniformemente as entradas, **cada operação tem complexidade O(1)** em média. Isso significa que o tempo para realizar uma operação é constante, independentemente do número de entradas na tabela.
