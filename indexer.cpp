@@ -19,31 +19,24 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // quebra todas as palavras do arquivo, transforma para lower case e verifica
+    // se é válida (não possui acentos)
     Words *words = formatter(argv);
 
     if (words == NULL)
         return 1;
 
-    // Imprime a lista de palavras
-    Words *aux = words;
-    while (aux != NULL)
-    {
-        // cout << aux->word << endl;
-        aux = aux->next;
-    }
-
     cout << "size = " << size << endl;
 
     HashTable *hash_table = new HashTable[size];
 
-    aux = words;
-    while (aux != NULL)
+    // insere as palavras na tabela hash
+    while (words != NULL)
     {
-        total_elements = insert(hash_table, aux->word, size, total_elements);
-        aux = aux->next;
+        total_elements = insert(hash_table, words->word, size, total_elements);
+        words = words->next;
 
-        // cout << "total_elements/size" << total_elements << "/" << size << " = " << total_elements / size << endl;
-
+        // verifica se a tabela hash precisa ser redimensionada
         if (total_elements / size >= 8)
         {
             size = size * 2;
@@ -52,7 +45,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    delete aux;
+    delete words;
 
     cout << "Palavra betray pesquisada: (esperada 775)" << search(hash_table, "betray", size) << endl;
 

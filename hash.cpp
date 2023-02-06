@@ -12,7 +12,6 @@ struct HashTable
     HashTable *next;
 };
 
-// TODO: resolver o problema da colisão
 // função hash que recebe palavra e devolve a posição na tabela hash
 int hash_function(string word, int size)
 {
@@ -30,19 +29,14 @@ int hash_function(string word, int size)
     return hash;
 }
 
-// inserir na tabela hash
-// encadeamento externo
+// inserir na tabela hash e retorna o número de elementos únicos
 int insert(HashTable *hash_table, string key, int size, int n)
 {
     int pos = hash_function(key, size);
-    // cout << "pos = " << pos << endl;
-    // cout << "key = " << key << endl;
     HashTable *aux = &hash_table[pos];
     int total_elements = n;
 
-    // cout << "total_elements = " << total_elements << endl;
-
-    // cout << "aux = " << aux->key << endl;
+    // se posição da tabela hash estiver vazia insere a palavra
     if (aux->key == "")
     {
         aux->key = key;
@@ -53,6 +47,7 @@ int insert(HashTable *hash_table, string key, int size, int n)
         return total_elements + 1;
     }
 
+    // se houver colisão, insere na lista
     while (aux->next != NULL)
     {
         if (aux->key == key)
@@ -62,23 +57,24 @@ int insert(HashTable *hash_table, string key, int size, int n)
         }
         aux = aux->next;
     }
+
+    // se a palavra já existir na lista, incrementa o contador
     if (aux->key == key)
     {
         aux->count++;
         return total_elements;
     }
+
+    // se não existir, insere no final da lista
     HashTable *novo = new HashTable;
     novo->key = key;
     novo->count = 1;
     novo->next = NULL;
     aux->next = novo;
-    // cout << "aux was not empty | " << aux->key << endl;
-    // cout << "pos = " << pos << endl;
     return total_elements + 1;
 }
 
-// pesquisa na tablea hash e na lista
-// encadeamento externo
+// pesquisa na bela hash e na lista
 int search(HashTable *hash_table, string key, int size)
 {
     int pos = hash_function(key, size);
@@ -102,7 +98,6 @@ int search(HashTable *hash_table, string key, int size)
 }
 
 // remimensionar tabela hash, realocando elementos anteriores
-// encadeamento externo
 // recebe tabela hash, tamanho antigo e novo
 HashTable *resize(HashTable *hash_table, int old_size, int new_size)
 {
@@ -128,7 +123,7 @@ HashTable *resize(HashTable *hash_table, int old_size, int new_size)
     return new_hash_table;
 }
 
-// print hash table
+// printa tabela hash
 void print_table(HashTable *hash_table, int size)
 {
     HashTable *aux;
