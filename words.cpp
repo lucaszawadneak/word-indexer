@@ -31,7 +31,7 @@ Words *formatter(char *argv[])
         transform(palavra.begin(), palavra.end(), palavra.begin(), ::tolower);
 
         // Verifica se a palavra tem mais de 2 letras
-        if (palavra.length() > 2 && palavra.find_first_of("0123456789.,;:!?*'/'()[]{}'\"") == string::npos)
+        if (palavra.length() > 2 && palavra.find_first_of("0123456789.,;:!?*'/'-()[]{}'\"") == string::npos)
         {
             Words *novo = new Words;
             novo->word = palavra;
