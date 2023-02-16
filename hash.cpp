@@ -156,13 +156,11 @@ void print_table(HashTable *hash_table, int size)
 
 string parse_word(string word)
 {
-    string::iterator it = word.end();
-    it--;
-    while (it != word.begin() && !isalpha(*it) && !isdigit(*it) && *it != '\'')
-    {
-        it = word.erase(it);
-        it--;
-    }
+    auto it = remove_if(word.begin(), word.end(), [](char const &c)
+                        { return !std::isalnum(c); });
+
+    word.erase(it, word.end());
+
     return word;
 }
 
