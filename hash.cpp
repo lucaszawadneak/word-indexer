@@ -18,6 +18,12 @@ struct InsertResult
     int element_count;
 };
 
+struct WordToTableResult
+{
+    int size;
+    HashTable *hash_table;
+};
+
 // função hash que recebe palavra e devolve a posição na tabela hash
 int hash_function(string word, int size)
 {
@@ -146,4 +152,61 @@ void print_table(HashTable *hash_table, int size)
             }
         }
     }
+}
+
+string parse_word(string word)
+{
+    string::iterator it = word.end();
+    it--;
+    while (it != word.begin() && !isalpha(*it) && !isdigit(*it) && *it != '\'')
+    {
+        it = word.erase(it);
+        it--;
+    }
+    return word;
+}
+
+WordToTableResult *word_to_table(char *argv[])
+{
+    int total_elements = 0, size = 97;
+    HashTable *head = new HashTable[97];
+    ifstream arquivo(argv[3]);
+    if (!arquivo.is_open())
+    {
+        cout << "Erro ao abrir arquivo" << endl;
+        return NULL;
+    }
+
+    string palavra;
+    while (arquivo >> palavra)
+    {
+        // Transforma a palavra para lower case
+
+        transform(palavra.begin(), palavra.end(), palavra.begin(), ::tolower);
+
+        string parsed_word = parse_word(palavra);
+
+        // cout << "parsed_word = " << parsed_word << endl;
+
+        // Verifica se a palavra tem mais de 2 letras e não possui caracteres especiais
+        if (parsed_word.length() > 2 && parsed_word.find_first_of("0123456789.,;:!?*'/'-_@#()[]{}'\"") == string::npos)
+        {
+            InsertResult result = insert(head, parsed_word, size, total_elements);
+            total_elements = result.total_elements;
+            if (total_elements / size >= 8)
+            {
+                size = size * 2;
+                cout << "Resizing table " << size * 2 << endl;
+                head = resize(head, size / 2, size);
+            }
+        }
+    }
+
+    WordToTableResult *word_result = new WordToTableResult;
+
+    word_result->size = size;
+    word_result->hash_table = head;
+
+    arquivo.close();
+    return word_result;
 }

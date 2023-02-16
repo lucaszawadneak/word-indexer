@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "words.cpp"
 #include "hash.cpp"
 
 using namespace std;
@@ -71,7 +70,6 @@ void find_n_max(HashTable *hash_table, int size, int n)
 // função main que recebe parametros de linha de comando
 int main(int argc, char *argv[])
 {
-    int total_elements = 0, size = 97;
     HashTable *hash_table;
 
     cout << "Indexador de palavras" << endl;
@@ -90,34 +88,11 @@ int main(int argc, char *argv[])
     // quebra todas as palavras do arquivo, transforma para lower case e verifica
     // se é válida (não possui acentos)
     cout << "Formatando arquivo...\n";
-    Words *words = formatter(argv);
 
-    if (words == NULL)
-        return 1;
+    WordToTableResult *result = word_to_table(argv);
 
-    // cout << "size = " << size << endl;
-
-    hash_table = new HashTable[size];
-
-    cout << "Inserindo palavras na tabela hash...\n";
-
-    // insere as palavras na tabela hash
-    while (words != NULL)
-    {
-        InsertResult result = insert(hash_table, words->word, size, total_elements);
-        total_elements = result.total_elements;
-
-        // verifica se a tabela hash precisa ser redimensionada
-        if (total_elements / size >= 8)
-        {
-            size = size * 2;
-            cout << "Resizing table " << size * 2 << endl;
-            hash_table = resize(hash_table, size / 2, size);
-        }
-        words = words->next;
-    }
-
-    delete words;
+    hash_table = result->hash_table;
+    int size = result->size;
 
     // print_table(hash_table, size);
 
