@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "hash.cpp"
+#include "binary_tree.cpp"
 
 using namespace std;
 
@@ -19,52 +20,30 @@ void print_how_to_use()
     cout << "Verifique ESPECIFICACAO.md para mais detalhes" << endl;
 }
 
-struct HashValue
-{
-    string word;
-    int count;
-};
-
 void find_n_max(HashTable *hash_table, int size, int n)
 {
     cout << "Inserindo valores no vetor...\n";
-    vector<HashValue> values;
+
     HashTable *aux;
+    BinaryNode *tree = NULL;
     for (int i = 0; i < size; i++)
     {
         aux = &hash_table[i];
+
         while (aux != NULL)
         {
-            // push back
-            HashValue value;
-            value.word = aux->key;
-            value.count = aux->count;
-            values.push_back(value);
+
+            insert_in_bin_tree(&tree, aux);
 
             aux = aux->next;
         }
     }
 
-    cout << "size = " << values.size() << endl;
-    // merge sort values
-    for (int i = 0; i < values.size(); i++)
-    {
-        for (int j = i + 1; j < values.size(); j++)
-        {
-            if (values[i].count < values[j].count)
-            {
-                HashValue aux = values[i];
-                values[i] = values[j];
-                values[j] = aux;
-            }
-        }
-    }
+    cout << "Tamanho do vetor: " << size << endl;
 
-    cout << "Os " << n << " maiores valores são: ";
-    for (int i = 0; i < n; i++)
-    {
-        cout << values[i].word << " (" << values[i].count << ") \n";
-    }
+    cout << "Os " << n << " maiores valores são: \n";
+
+    print_n_max(tree, n);
 }
 
 // função main que recebe parametros de linha de comando
