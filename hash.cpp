@@ -164,11 +164,11 @@ string parse_word(string word)
     return word;
 }
 
-WordToTableResult *word_to_table(char *argv[])
+WordToTableResult *word_to_table(char *argv[], int file = 3)
 {
     int total_elements = 0, size = 97;
     HashTable *head = new HashTable[97];
-    ifstream arquivo(argv[3]);
+    ifstream arquivo(argv[file]);
     if (!arquivo.is_open())
     {
         cout << "Erro ao abrir arquivo" << endl;
