@@ -45,8 +45,14 @@ void find_n_max(HashTable *hash_table, int size, int n)
     {
         aux = &hash_table[i];
 
-        while (aux != NULL)
+        while (aux)
         {
+
+            if (aux->count == 0)
+            {
+                aux = aux->next;
+                continue;
+            }
 
             insert_in_bin_tree(&tree, aux);
 
@@ -61,21 +67,116 @@ void find_n_max(HashTable *hash_table, int size, int n)
     print_n_max(tree, n);
 }
 
-void insert_in_vetor(TermFrequency *vector, TermFrequency *term)
+void insert_term_frequency(TermFrequency *&head, string filename, float frequency)
 {
-    if (!vector)
+    TermFrequency *new_node = new TermFrequency;
+    new_node->filename = filename;
+    new_node->frequency = frequency;
+    new_node->next = NULL;
+
+    if (head == NULL)
     {
-        vector = term;
+        head = new_node;
     }
     else
     {
-        TermFrequency *aux = vector;
-        while (!aux->next)
+        TermFrequency *curr = head;
+        while (curr->next != NULL)
         {
-            aux = aux->next;
+            curr = curr->next;
         }
-        aux->next = term;
+        curr->next = new_node;
     }
+}
+
+void calc_and_insert_TF(TF_IDF *&head, TermFrequency *item, float inverseDocumentFrequency)
+{
+    float termFrequency = item->frequency;
+    float tf_idf = termFrequency * inverseDocumentFrequency;
+
+    TF_IDF *new_node = new TF_IDF;
+    new_node->filename = item->filename;
+    new_node->tf_idf = tf_idf;
+    new_node->next = NULL;
+
+    if (head == NULL)
+    {
+        head = new_node;
+    }
+    else
+    {
+        TF_IDF *curr = head;
+        while (curr->next != NULL)
+        {
+            curr = curr->next;
+        }
+        curr->next = new_node;
+    }
+}
+
+void sort_tf_idf_list(TF_IDF *&head)
+{
+    if (!head || !head->next)
+    {
+        return; // lista vazia ou com apenas um elemento, nada a fazer
+    }
+
+    // dividir a lista em duas metades, usando slow/fast pointer
+    TF_IDF *slow = head, *fast = head->next;
+    while (fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    TF_IDF *mid = slow->next;
+    slow->next = nullptr;
+
+    // recursivamente ordenar as duas metades
+    sort_tf_idf_list(head);
+    sort_tf_idf_list(mid);
+
+    // intercalar as duas listas ordenadas
+    TF_IDF *merged = nullptr, *tail = nullptr;
+    while (head && mid)
+    {
+        if (head->tf_idf > mid->tf_idf)
+        {
+            if (!merged)
+            {
+                merged = tail = head;
+            }
+            else
+            {
+                tail->next = head;
+                tail = tail->next;
+            }
+            head = head->next;
+        }
+        else
+        {
+            if (!merged)
+            {
+                merged = tail = mid;
+            }
+            else
+            {
+                tail->next = mid;
+                tail = tail->next;
+            }
+            mid = mid->next;
+        }
+    }
+    // adicionar os restantes, se houver
+    if (head)
+    {
+        tail->next = head;
+    }
+    else if (mid)
+    {
+        tail->next = mid;
+    }
+    // atualizar o ponteiro da cabeça da lista
+    head = merged;
 }
 
 // função main que recebe parametros de linha de comando
@@ -125,63 +226,12 @@ int main(int argc, char *argv[])
             {
                 is_in_documents++;
             }
-            else
-            {
-                TermFrequency *new_frequency = new TermFrequency;
-                new_frequency->filename = argv[i];
-                new_frequency->frequency = 0;
-
-                if (!frequency_vector)
-                {
-                    frequency_vector = new_frequency;
-                }
-                else
-                {
-                    TermFrequency *aux = frequency_vector;
-                    while (!aux->next)
-                    {
-                        aux = aux->next;
-                    }
-                    aux->next = new_frequency;
-                }
-                continue;
-            }
 
             float termFrequency = occurrences / (float)fileSize;
 
-            TermFrequency *new_frequency = new TermFrequency;
-            new_frequency->filename = argv[i];
-            new_frequency->frequency = termFrequency;
+            insert_term_frequency(frequency_vector, argv[i], termFrequency);
 
-            if (!frequency_vector)
-            {
-                frequency_vector = new_frequency;
-            }
-            else
-            {
-                TermFrequency *aux = frequency_vector;
-                while (!aux->next)
-                {
-                    aux = aux->next;
-                }
-                aux->next = new_frequency;
-            }
-
-            // float inverseDocumentFrequency = log10(documents / is_in_documents);
-
-            // float tf_idf = termFrequency * inverseDocumentFrequency;
-
-            // cout << "Palavra: " << searchKey << endl;
-            // cout << "Documentos: " << documents << " documentos" << endl;
-            // cout << "Em quantos documentos a palavra aparece: " << is_in_documents << " documentos" << endl;
-            // cout << "Ocorrencias: " << occurrences << " ocorrências" << endl;
-            // cout << "Frequencia: " << termFrequency << " ocorrências" << endl;
-            // cout << "Frequencia inversa: " << inverseDocumentFrequency << " ocorrências" << endl;
-            // cout << "TF-IDF: " << tf_idf << endl;
-
-            // TF_IDF *new_tf_idf = new TF_IDF;
-            // new_tf_idf->filename = argv[i];
-            // new_tf_idf->tf_idf = tf_idf;
+            free(wordToTableResult);
         }
 
         // print term frequency vector
@@ -189,38 +239,28 @@ int main(int argc, char *argv[])
 
         TF_IDF *tf_idf_vector = NULL;
 
+        float inverseDocumentFrequency = log(documents / (float)is_in_documents);
+
         while (printAux)
         {
-
-            cout << "Arquivo: " << printAux->filename << endl;
-            cout << "Frequencia: " << printAux->frequency << endl;
-
-            // float inverseDocumentFrequency = log10(documents / is_in_documents);
-
-            // float tf_idf = printAux->frequency * inverseDocumentFrequency;
-
-            // TF_IDF *new_tf_idf = new TF_IDF;
-            // new_tf_idf->filename = printAux->filename;
-            // new_tf_idf->tf_idf = tf_idf;
-
-            // if (!tf_idf_vector)
-            // {
-            //     tf_idf_vector = new_tf_idf;
-            // }
-            // else
-            // {
-            //     TF_IDF *aux = tf_idf_vector;
-            //     while (!aux->next)
-            //     {
-            //         aux = aux->next;
-            //     }
-            //     aux->next = new_tf_idf;
-            // }
+            calc_and_insert_TF(tf_idf_vector, printAux, inverseDocumentFrequency);
 
             printAux = printAux->next;
         }
+        TF_IDF *tf_print_aux = tf_idf_vector;
 
-        cout << "teste" << endl;
+        sort_tf_idf_list(tf_print_aux);
+
+        cout << "------------------------" << endl;
+        cout << "Ordem TF-IDF:" << endl;
+
+        while (tf_print_aux)
+        {
+            cout << "Arquivo: " << tf_print_aux->filename << endl;
+            cout << "TF-IDF: " << tf_print_aux->tf_idf << endl;
+
+            tf_print_aux = tf_print_aux->next;
+        }
 
         return 0;
     }
