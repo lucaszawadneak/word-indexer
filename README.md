@@ -22,13 +22,7 @@ Com o pacote instalado, é preciso compilar o código do projeto, utilizando o s
 g++ indexer.cpp
 ```
 
-Esse comando irá gerar o arquivo **a.out**. Para rodar o códio do projeto então utilize:
-
-```
-./a.out ARQUIVO
-```
-
-Também é possível rodar com as outras funções desejadas:
+Esse comando irá gerar o arquivo **a.out**. Para rodar o códio do projeto então utilize, de acordo com a [especificação](ESPECIFICACAO.md):
 
 ```
 ./a.out --freq N ARQUIVO
@@ -43,4 +37,8 @@ Trabalho desenvolvido para composição de nota na matéria de Estrutura de Dado
 
 Curitiba, 2023
 
-//TODO: nomes e GRRS
+Lucas Cassilha Zawadneak
+GRR20200141
+
+Leonardo Xavier
+GRR2020

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <ctgmath>
+#include <sstream>
 
 #include "hash.cpp"
 #include "binary_tree.cpp"
@@ -106,9 +107,24 @@ void calc_and_insert_TF(TF_IDF *&head, TermFrequency *item, float inverseDocumen
     else
     {
         TF_IDF *curr = head;
+        if (head->filename == item->filename)
+        {
+            head->tf_idf = (head->tf_idf + tf_idf) / 2;
+            return;
+        }
         while (curr->next != NULL)
         {
+            if (curr->filename == item->filename)
+            {
+                curr->tf_idf = (curr->tf_idf + tf_idf) / 2;
+                return;
+            }
             curr = curr->next;
+        }
+        if (curr->filename == item->filename)
+        {
+            curr->tf_idf = (curr->tf_idf + tf_idf) / 2;
+            return;
         }
         curr->next = new_node;
     }
@@ -206,46 +222,54 @@ int main(int argc, char *argv[])
         cout << "Documentos a serem analisados: " << documents << endl;
         cout << "Termo a ser buscado: " << searchKey << endl;
 
-        TermFrequency *frequency_vector = NULL;
-        int is_in_documents = 0;
-
-        for (int i = 3; i < argc; i++)
-        {
-            cout << argv[i] << endl;
-
-            HashTable *fileHashTable;
-
-            WordToTableResult *wordToTableResult = word_to_table(argv, i);
-
-            fileHashTable = wordToTableResult->hash_table;
-            int fileSize = wordToTableResult->size;
-
-            int occurrences = search(fileHashTable, searchKey, fileSize);
-
-            if (occurrences > 0)
-            {
-                is_in_documents++;
-            }
-
-            float termFrequency = occurrences / (float)fileSize;
-
-            insert_term_frequency(frequency_vector, argv[i], termFrequency);
-
-            free(wordToTableResult);
-        }
-
-        // print term frequency vector
-        TermFrequency *printAux = frequency_vector;
-
+        stringstream ss(searchKey); // cria um stringstream a partir da string de entrada
+        string palavra;
+        vector<std::string> palavras;
         TF_IDF *tf_idf_vector = NULL;
 
-        float inverseDocumentFrequency = log(documents / (float)is_in_documents);
+        while (ss >> palavra)
+        { // lê palavras separadas por espaço
+            cout << "Palavra: " << palavra << endl;
+            TermFrequency *frequency_vector = NULL;
+            int is_in_documents = 0;
 
-        while (printAux)
-        {
-            calc_and_insert_TF(tf_idf_vector, printAux, inverseDocumentFrequency);
+            for (int i = 3; i < argc; i++)
+            {
 
-            printAux = printAux->next;
+                cout << argv[i] << endl;
+
+                HashTable *fileHashTable;
+
+                WordToTableResult *wordToTableResult = word_to_table(argv, i);
+
+                fileHashTable = wordToTableResult->hash_table;
+                int fileSize = wordToTableResult->size;
+
+                int occurrences = search(fileHashTable, palavra, fileSize);
+
+                if (occurrences > 0)
+                {
+                    is_in_documents++;
+                }
+
+                float termFrequency = occurrences / (float)fileSize;
+
+                insert_term_frequency(frequency_vector, argv[i], termFrequency);
+
+                free(wordToTableResult);
+            }
+
+            // print term frequency vector
+            TermFrequency *printAux = frequency_vector;
+
+            float inverseDocumentFrequency = log(documents / (float)is_in_documents) || 0;
+
+            while (printAux)
+            {
+                calc_and_insert_TF(tf_idf_vector, printAux, inverseDocumentFrequency);
+
+                printAux = printAux->next;
+            }
         }
         TF_IDF *tf_print_aux = tf_idf_vector;
 
