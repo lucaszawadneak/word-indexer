@@ -14,7 +14,7 @@ Em comparação a outras estruturas como árvores e listas ligadas, a tabela has
 
 ## Rodando o Projeto
 
-O projeto foi desenvolvido utilizando C++. Desse modo, para rodar a aplicação é primeiro preciso compilar o código. Para isso, é necessário [instalar o pacote](https://linuxconfig.org/how-to-install-g-the-c-compiler-on-ubuntu-18-04-bionic-beaver-linux) **g++**
+O projeto foi desenvolvido utilizando C++. Desse modo, para rodar a aplicação no Linux é primeiro preciso compilar o código. Para isso, é necessário [instalar o pacote](https://linuxconfig.org/how-to-install-g-the-c-compiler-on-ubuntu-18-04-bionic-beaver-linux) **g++**
 
 Com o pacote instalado, é preciso compilar o código do projeto, utilizando o seguinte comando:
 
