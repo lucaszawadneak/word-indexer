@@ -37,8 +37,8 @@ Trabalho desenvolvido para composição de nota na matéria de Estrutura de Dado
 
 Curitiba, 2023
 
+Leonardo Xavier da Silva Moraes
+GRR20204488
+
 Lucas Cassilha Zawadneak
 GRR20200141
-
-Leonardo Xavier
-GRR2020
