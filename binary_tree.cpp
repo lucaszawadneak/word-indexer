@@ -21,12 +21,12 @@ void insert_in_bin_tree(BinaryNode **root, HashTable *item)
         return;
     }
 
-    if (item->count < (*root)->count)
+    if (item->count <= (*root)->count)
     {
         insert_in_bin_tree(&(*root)->left, item);
     }
 
-    if (item->count >= (*root)->count)
+    if (item->count > (*root)->count)
     {
         insert_in_bin_tree(&(*root)->right, item);
     }

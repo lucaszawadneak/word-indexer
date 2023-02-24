@@ -46,7 +46,7 @@ void find_n_max(HashTable *hash_table, int size, int n)
     {
         aux = &hash_table[i];
 
-        while (aux)
+        while (aux->next)
         {
 
             if (aux->count == 0)
